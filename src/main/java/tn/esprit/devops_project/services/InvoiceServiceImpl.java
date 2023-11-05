@@ -3,7 +3,7 @@ package tn.esprit.devops_project.services;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.devops_project.entities.Invoice;
 import tn.esprit.devops_project.entities.Operator;
 import tn.esprit.devops_project.entities.Supplier;
@@ -21,11 +21,10 @@ import java.util.List;
 @AllArgsConstructor
 public class InvoiceServiceImpl implements IInvoiceService {
 
-
-InvoiceRepository invoiceRepository;
+	InvoiceRepository invoiceRepository;
 	OperatorRepository operatorRepository;
-	 InvoiceDetailRepository invoiceDetailRepository;
-	 SupplierRepository supplierRepository;
+	InvoiceDetailRepository invoiceDetailRepository;
+	SupplierRepository supplierRepository;
 
 	//commentaire
 	//commentaire 2 developper
@@ -65,10 +64,9 @@ InvoiceRepository invoiceRepository;
 	public void assignOperatorToInvoice(Long idOperator, Long idInvoice) {
 		Invoice invoice = invoiceRepository.findById(idInvoice).orElseThrow(() -> new NullPointerException("Invoice not found"));
 		Operator operator = operatorRepository.findById(idOperator).orElseThrow(() -> new NullPointerException("Operator not found"));
-
-		invoice.setOperator(operator);
-//		operatorRepository.save(operator);
-		invoiceRepository.save(invoice);
+		operator.getInvoices().add(invoice);
+		operatorRepository.save(operator);
+//		invoiceRepository.save(invoice);
 	}
 
 	@Override

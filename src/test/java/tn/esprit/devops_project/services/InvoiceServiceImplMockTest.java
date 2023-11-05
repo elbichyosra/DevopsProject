@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@SpringBootTest
 public class InvoiceServiceImplMockTest {
     @Mock
     private InvoiceRepository invoiceRepository;
@@ -43,8 +44,8 @@ public class InvoiceServiceImplMockTest {
     public void retrieveAllInvoices() {
         // Créez des données de test
         List<Invoice> invoices = new ArrayList<>();
-        invoices.add(new Invoice(1L, 100.0f, 200.0f, new Date(2023,9,10), new Date(2023,10,14), false, null, null,null));
-        invoices.add(new Invoice(2L, 200.0f, 200.0f, new Date(2023,9,10), new Date(2023,10,14), false, null, null,null));
+        invoices.add(new Invoice(1L, 100.0f, 200.0f, new Date(2023,9,10), new Date(2023,10,14), false, null, null));
+        invoices.add(new Invoice(2L, 200.0f, 200.0f, new Date(2023,9,10), new Date(2023,10,14), false, null, null));
         when(invoiceRepository.findAll()).thenReturn(invoices);
 
         // Appel de la méthode
@@ -59,7 +60,7 @@ public class InvoiceServiceImplMockTest {
     @Test
     public void retrieveInvoice() {
         Long invoiceId = 1L;
-        Invoice invoice = new Invoice(2L, 100.0f, 200.0f, new Date(2023,9,10), new Date(2023,10,14), false, null, null,null); // Créez un objet facture factice
+        Invoice invoice = new Invoice(2L, 100.0f, 200.0f, new Date(2023,9,10), new Date(2023,10,14), false, null, null); // Créez un objet facture factice
         when(invoiceRepository.findById(invoiceId)).thenReturn(Optional.of(invoice));
 
         Invoice retrievedInvoice = invoiceService.retrieveInvoice(invoiceId);
@@ -70,7 +71,7 @@ public class InvoiceServiceImplMockTest {
     @Test
     public void cancelInvoice() {
         Long invoiceId = 1L;
-        Invoice invoice = new Invoice(2L, 100.0f, 200.0f ,new Date(2023,9,10), new Date(2023,10,14), false, null, null,null); // Créez un objet factice
+        Invoice invoice = new Invoice(2L, 100.0f, 200.0f ,new Date(2023,9,10), new Date(2023,10,14), false, null, null); // Créez un objet factice
         when(invoiceRepository.findById(invoiceId)).thenReturn(Optional.of(invoice));
 
         invoiceService.cancelInvoice(invoiceId);
@@ -80,38 +81,22 @@ public class InvoiceServiceImplMockTest {
     }
     @Test
     void addInvoice() {
-        Invoice invoice = new Invoice(2L, 100.0f, 200.0f ,new Date(2023,9,10), new Date(2023,10,14), false, null, null,null);
+        Invoice invoice = new Invoice(2L, 100.0f, 200.0f ,new Date(2023,9,10), new Date(2023,10,14), false, null, null);
         Mockito.when(invoiceRepository.save(Mockito.any(Invoice.class))).thenReturn(invoice);
 
        Invoice invTest=invoiceService.addInvoice(invoice);
         Assertions.assertNotNull(invTest);
     }
 
-//    @Test
-//    public void getInvoicesBySupplier() {
-//        Long supplierId = 1L;
-//        Supplier supplier = new Supplier(1L, "code1", "label1", SupplierCategory.ORDINAIRE, null, null); // Créez un objet fournisseur factice
-//        when(supplierRepository.findById(supplierId)).thenReturn(Optional.of(supplier));
-//        Invoice invoice1 = new Invoice(1L, 100.0f, 200.0f ,new Date(2023,7,14), new Date(2023,10,14), false, null, null,null);
-//        Invoice invoice2 = new Invoice(2L, 300.0f, 400.0f ,new Date(2023,9,10), new Date(2023,10,14), false, null,null,null);
-//        supplier.getInvoices().add(invoice1);
-//        supplier.getInvoices().add(invoice2);
-//
-//        List<Invoice> invoices = invoiceService.getInvoicesBySupplier(supplierId);
-//
-//        assertEquals(2, invoices.size());
-//        assertTrue(invoices.contains(invoice1));
-//        assertTrue(invoices.contains(invoice2));
-//        verify(supplierRepository).findById(supplierId);
-//    }
+
 @Test
 public void getInvoicesBySupplier() {
     Long supplierId = 1L;
 
     // Créez un objet Supplier factice avec des factures associées
     Supplier mockSupplier = new Supplier(1L, "code1", "label1", SupplierCategory.ORDINAIRE, null, null);
-    mockSupplier.setInvoices(List.of(new Invoice(1L, 100.0f, 200.0f, new Date(2023, 7, 14), new Date(2023, 10, 14), false, null, null, null),
-            new Invoice(2L, 300.0f, 400.0f, new Date(2023, 9, 10), new Date(2023, 10, 14), false, null, null, null)));
+    mockSupplier.setInvoices(List.of(new Invoice(1L, 100.0f, 200.0f, new Date(2023, 7, 14), new Date(2023, 10, 14), false, null, null),
+            new Invoice(2L, 300.0f, 400.0f, new Date(2023, 9, 10), new Date(2023, 10, 14), false, null, null)));
 
     when(supplierRepository.findById(supplierId)).thenReturn(Optional.of(mockSupplier));
 
@@ -127,28 +112,25 @@ public void getInvoicesBySupplier() {
         Long invoiceId = 2L;
 
         // Créez un objet Invoice factice
-        Invoice mockInvoice = new Invoice(2L, 300.0f, 400.0f, null,null , false, null, null, null);
+        Invoice mockInvoice = new Invoice(1L, 100.0f, 200.0f, null,null, false, null, null);
 
         // Créez un objet Operator factice
-        Operator mockOperator = new Operator(1L, "yosra", "elbich", "yosra123", null);
+        Operator mockOperator = new Operator(1L,"yosra", "elbich", "yossra123");
 
         when(invoiceRepository.findById(invoiceId)).thenReturn(Optional.of(mockInvoice));
         when(operatorRepository.findById(operatorId)).thenReturn(Optional.of(mockOperator));
 
         invoiceService.assignOperatorToInvoice(operatorId, invoiceId);
 
-        // Vérifiez que l'opérateur contient la facture
-//        assertTrue(mockOperator.getInvoices().contains(mockInvoice));
-
         // Vérifiez que la méthode save a été appelée pour sauvegarder l'opérateur
-        verify(invoiceRepository, times(1)).save(mockInvoice);
+        verify(operatorRepository, times(1)).save(mockOperator);
     }
 
 
     @Test
     public void getTotalAmountInvoiceBetweenDates() {
-        Date startDate = new Date(2023,9,22); // Remplacez ces dates par des dates valides
-        Date endDate = new Date(2023,10,14); // Remplacez ces dates par des dates valides
+        Date startDate = new Date(2023,9,22);
+        Date endDate = new Date(2023,10,14);
         float expectedTotalAmount = 100.0f;
         when(invoiceRepository.getTotalAmountInvoiceBetweenDates(startDate, endDate)).thenReturn(expectedTotalAmount);
 

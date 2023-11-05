@@ -41,8 +41,6 @@ public class  Invoice implements Serializable {
     @ManyToOne
 	@JsonIgnore
     Supplier supplier;
-	@ManyToOne
-	@JsonIgnore
-	Operator operator;
+
 
 }
