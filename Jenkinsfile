@@ -8,6 +8,13 @@ pipeline {
                     sh 'mvn clean compile'
                 }
             }
+     stage('Test With Junit/Mockito') {
+            steps {
+               
+                    sh "mvn test "
+                
+            }
+        }    
     }
 }
 
